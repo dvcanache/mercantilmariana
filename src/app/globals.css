@@ -1,0 +1,231 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --excel-dark: #274E13;
+  --excel-medium: #38761D;
+  --excel-vibrant: #00A758;
+  --excel-sage: #E2F0D9;
+  --excel-peach: #FBE3D6;
+  --excel-charcoal: #494949;
+  --win-bg: #F0F2F5;
+  --win-border: #D1D5DB;
+}
+
+body {
+  background-color: var(--win-bg);
+  color: #1F2937;
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
+  user-select: none;
+  overflow-x: hidden;
+}
+
+/* Windows 10 Desktop Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F1F1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CDCDCD;
+  border: 2px solid #F1F1F1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A6A6A6;
+}
+
+/* Windows 10 Table Grid Aesthetic & Sticky Header */
+.win-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  font-size: 13px;
+}
+
+.win-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: #38761D;
+  color: #FFFFFF;
+  font-weight: 600;
+  border-top: 1px solid #274E13;
+  border-bottom: 2px solid #1E3B0F;
+  border-right: 1px solid #274E13;
+  border-left: 1px solid #274E13;
+  padding: 8px 12px;
+  text-align: left;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.win-table thead th.charcoal {
+  background-color: #494949;
+  border-color: #333333;
+}
+
+.win-table tbody td {
+  border-right: 1px solid #E5E7EB;
+  border-bottom: 1px solid #E5E7EB;
+  border-left: 1px solid #E5E7EB;
+  padding: 7px 12px;
+  background-color: #FFFFFF;
+  transition: background-color 0.1s ease;
+}
+
+.win-table tbody tr:hover td {
+  background-color: #EBF7E7 !important;
+}
+
+.win-table tbody tr.selected td {
+  background-color: #E2F0D9 !important;
+}
+
+.win-table td.numeric,
+.win-table th.numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-family: Consolas, "Courier New", monospace;
+}
+
+/* Bi-Monetary Price Cell Tokens */
+.price-cell-bcv {
+  background-color: #F9FAFB;
+  color: #111827;
+  font-weight: 700;
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.price-cell-bs {
+  background-color: rgba(226, 240, 217, 0.55);
+  color: #1E3B0F;
+  font-weight: 800;
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.price-cell-promo1 {
+  background-color: rgba(254, 243, 199, 0.7);
+  color: #78350F;
+  font-weight: 700;
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.price-cell-promo2 {
+  background-color: rgba(209, 250, 229, 0.7);
+  color: #064E3B;
+  font-weight: 700;
+  font-family: Consolas, "Courier New", monospace;
+}
+
+/* Windows 10 Touch-Friendly Buttons (minimum 36px height) */
+.win-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 16px;
+  background-color: #FFFFFF;
+  border: 1px solid #B0B0B0;
+  border-radius: 0px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  min-height: 36px;
+  user-select: none;
+}
+
+.win-btn:hover {
+  background-color: #E5F1FB;
+  border-color: #0078D7;
+}
+
+.win-btn:active {
+  background-color: #CCE4F7;
+  border-color: #005499;
+}
+
+.win-btn:focus-visible {
+  outline: 2px solid #0078D7;
+  outline-offset: 1px;
+}
+
+.win-btn.primary {
+  background-color: #274E13;
+  color: #FFFFFF;
+  border-color: #1B360D;
+  font-weight: 600;
+}
+
+.win-btn.primary:hover {
+  background-color: #38761D;
+  border-color: #274E13;
+}
+
+/* Window Control Buttons */
+.win-ctrl-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 36px;
+  color: #FFFFFF;
+  transition: background-color 0.15s;
+}
+
+.win-ctrl-btn:hover {
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+.win-ctrl-btn.close:hover {
+  background-color: #E81123;
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    font-size: 10pt;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .win-table {
+    border: 1px solid #333333 !important;
+  }
+
+  .win-table thead th {
+    background-color: #274E13 !important;
+    color: #FFFFFF !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    position: static !important;
+    box-shadow: none !important;
+  }
+
+  .win-table td {
+    border: 1px solid #DDDDDD !important;
+    background-color: #FFFFFF !important;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}

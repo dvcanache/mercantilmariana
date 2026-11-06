@@ -1,0 +1,514 @@
+{
+  "rates": {
+    "supplierReplacementRate": 970.0,
+    "officialBcvRate": 849.56,
+    "promoDiscountPercentage": 0.06
+  },
+  "categories": [
+    {
+      "code": "CAT-01",
+      "name": "Colchones",
+      "suggestedMargin": 0.35
+    },
+    {
+      "code": "CAT-02",
+      "name": "L\u00ednea Blanca y Electrodom\u00e9sticos",
+      "suggestedMargin": 0.3
+    },
+    {
+      "code": "CAT-03",
+      "name": "Muebles y Mobiliario",
+      "suggestedMargin": 0.35
+    },
+    {
+      "code": "CAT-04",
+      "name": "Equipamiento para Cafeter\u00edas",
+      "suggestedMargin": 0.4
+    },
+    {
+      "code": "CAT-05",
+      "name": "Neveras",
+      "suggestedMargin": 0.2
+    }
+  ],
+  "products": [
+    {
+      "sku": "PROD-001",
+      "name": "Colch\u00f3n Matrimonial Ortop\u00e9dico",
+      "category": "Colchones",
+      "brand": "Pullman",
+      "model": "Ortop\u00e9dico Plus",
+      "supplierCostUsd": 180.0,
+      "targetMarginPercentage": 0.5,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-002",
+      "name": "Colch\u00f3n Individual Semi-Ortop\u00e9dico",
+      "category": "Colchones",
+      "brand": "Pullman",
+      "model": "Semi-Ortop\u00e9dico Confort",
+      "supplierCostUsd": 95.0,
+      "targetMarginPercentage": 0.5,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-003",
+      "name": "Colch\u00f3n Queen Size Pillow Top",
+      "category": "Colchones",
+      "brand": "Pullman",
+      "model": "Pillow Top Luxe",
+      "supplierCostUsd": 240.0,
+      "targetMarginPercentage": 0.38,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-004",
+      "name": "Nevera No Frost 12 Pies",
+      "category": "L\u00ednea Blanca y Electrodom\u00e9sticos",
+      "brand": "Mabe",
+      "model": "Frost Free 12P",
+      "supplierCostUsd": 380.0,
+      "targetMarginPercentage": 0.28,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-005",
+      "name": "Lavadora Autom\u00e1tica 14 Kg",
+      "category": "L\u00ednea Blanca y Electrodom\u00e9sticos",
+      "brand": "LG",
+      "model": "Autom\u00e1tica 14Kg",
+      "supplierCostUsd": 320.0,
+      "targetMarginPercentage": 0.28,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-006",
+      "name": "Cocina a Gas 4 Hornillas con Horno",
+      "category": "L\u00ednea Blanca y Electrodom\u00e9sticos",
+      "brand": "Mabe",
+      "model": "Gas 4H c/Horno",
+      "supplierCostUsd": 160.0,
+      "targetMarginPercentage": 0.3,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-007",
+      "name": "Juego de Comedor 6 Puestos Madera",
+      "category": "Muebles y Mobiliario",
+      "brand": "Muebles \u00c9lite",
+      "model": "Madera 6 Puestos",
+      "supplierCostUsd": 290.0,
+      "targetMarginPercentage": 0.35,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-008",
+      "name": "Juego de Muebles Modular para Sala",
+      "category": "Muebles y Mobiliario",
+      "brand": "Muebles \u00c9lite",
+      "model": "Modular L-Shape",
+      "supplierCostUsd": 350.0,
+      "targetMarginPercentage": 0.35,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-009",
+      "name": "Cafetera Espresso Comercial 2 Grupos",
+      "category": "Equipamiento para Cafeter\u00edas",
+      "brand": "Rancilio",
+      "model": "Barista Pro 2G",
+      "supplierCostUsd": 850.0,
+      "targetMarginPercentage": 0.4,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-010",
+      "name": "Cafetera de Goteo Programable 12 Tazas",
+      "category": "Equipamiento para Cafeter\u00edas",
+      "brand": "Oster",
+      "model": "Goteo 12 Tazas",
+      "supplierCostUsd": 45.0,
+      "targetMarginPercentage": 0.35,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-011",
+      "name": "Cama Base Matrimonial Tapizada",
+      "category": "Muebles y Mobiliario",
+      "brand": "Muebles \u00c9lite",
+      "model": "Matrimonial Tapizada",
+      "supplierCostUsd": 140.0,
+      "targetMarginPercentage": 0.35,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-012",
+      "name": "Molino de Caf\u00e9 Industrial Tolva 1kg",
+      "category": "Equipamiento para Cafeter\u00edas",
+      "brand": "Rancilio",
+      "model": "Tolva 1kg Ind.",
+      "supplierCostUsd": 185.0,
+      "targetMarginPercentage": 0.4,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-013",
+      "name": "nueva nevera mas",
+      "category": "Neveras",
+      "brand": "Samsung",
+      "model": "Frost Free 9P",
+      "supplierCostUsd": 200.0,
+      "targetMarginPercentage": 0.35,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-014",
+      "name": "OTRA NEVERA",
+      "category": "Neveras",
+      "brand": "Gen\u00e9rico",
+      "model": "Compact Est\u00e1ndar",
+      "supplierCostUsd": 25.0,
+      "targetMarginPercentage": 0.35,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-015",
+      "name": "Colch\u00f3n Queen Size Pillow Top",
+      "category": "Colchones",
+      "brand": "Pullman",
+      "model": "Pillow Top Luxe",
+      "supplierCostUsd": 240.0,
+      "targetMarginPercentage": 0.35,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-016",
+      "name": "mabe dos puestas vertical",
+      "category": "Neveras",
+      "brand": "Mabe",
+      "model": "dos puertas",
+      "supplierCostUsd": 600.0,
+      "targetMarginPercentage": 0.35,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-017",
+      "name": "mabe dos puestas vertical 2",
+      "category": "Neveras",
+      "brand": "Mabe",
+      "model": "dos puertas",
+      "supplierCostUsd": 600.0,
+      "targetMarginPercentage": 0.35,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-018",
+      "name": "mabe dos puestas vertical 3",
+      "category": "Neveras",
+      "brand": "Mabe",
+      "model": "dos puertas",
+      "supplierCostUsd": 600.0,
+      "targetMarginPercentage": 0.35,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-019",
+      "name": "mabe dos puestas vertical 4",
+      "category": "Neveras",
+      "brand": "Mabe",
+      "model": "dos puertas",
+      "supplierCostUsd": 600.0,
+      "targetMarginPercentage": 0.35,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    },
+    {
+      "sku": "PROD-020",
+      "name": "mabe verticual cuatro puertas",
+      "category": "Colchones",
+      "brand": "Mabe",
+      "model": "cuatro puertas",
+      "supplierCostUsd": 600.0,
+      "targetMarginPercentage": 0.35,
+      "unitOfMeasure": "Unidad",
+      "currentStock": 10
+    }
+  ],
+  "fixedCosts": [
+    {
+      "concept": "Alquiler de Local Comercial",
+      "monthlyAmountUsd": 450.0,
+      "active": true
+    },
+    {
+      "concept": "Sueldos y Salarios del Personal",
+      "monthlyAmountUsd": 700.0,
+      "active": true
+    },
+    {
+      "concept": "Electricidad Comercial (Corpoelec)",
+      "monthlyAmountUsd": 65.0,
+      "active": true
+    },
+    {
+      "concept": "Internet Fibra \u00d3ptica y Telefon\u00eda",
+      "monthlyAmountUsd": 45.0,
+      "active": true
+    },
+    {
+      "concept": "Servicio de Agua y Aseo Urbano",
+      "monthlyAmountUsd": 35.0,
+      "active": true
+    },
+    {
+      "concept": "Impuestos Municipales y Patente",
+      "monthlyAmountUsd": 90.0,
+      "active": true
+    },
+    {
+      "concept": "Software de Punto de Venta e Impresora Fiscal",
+      "monthlyAmountUsd": 30.0,
+      "active": true
+    },
+    {
+      "concept": "Servicios Contables y Asesor\u00eda",
+      "monthlyAmountUsd": 80.0,
+      "active": true
+    },
+    {
+      "concept": "Mantenimiento y Seguridad Local",
+      "monthlyAmountUsd": 50.0,
+      "active": true
+    },
+    {
+      "concept": "Caja Chica e Imprevistos Mensuales",
+      "monthlyAmountUsd": 55.0,
+      "active": true
+    }
+  ],
+  "sales": [
+    {
+      "date": "2026-09-21",
+      "paymentMethod": "Divisas Efectivo",
+      "productName": "Colch\u00f3n Matrimonial Ortop\u00e9dico",
+      "invoiceNumber": "F-0001",
+      "quantity": 1.0,
+      "unitSalePriceUsd": 277.0,
+      "unitCostUsd": 158.0,
+      "totalSaleUsd": 277.0,
+      "unitMarginUsd": 119.0,
+      "totalMarginUsd": 119.0
+    },
+    {
+      "date": "2026-09-21",
+      "paymentMethod": "Punto de Venta",
+      "productName": "Cafetera de Goteo Programable 12 Tazas",
+      "invoiceNumber": "F-0002",
+      "quantity": 2.0,
+      "unitSalePriceUsd": 55.0,
+      "unitCostUsd": 40.0,
+      "totalSaleUsd": 110.0,
+      "unitMarginUsd": 15.0,
+      "totalMarginUsd": 30.0
+    },
+    {
+      "date": "2026-09-20",
+      "paymentMethod": "Zelle",
+      "productName": "Nevera No Frost 12 Pies",
+      "invoiceNumber": "F-0003",
+      "quantity": 1.0,
+      "unitSalePriceUsd": 406.0,
+      "unitCostUsd": 333.0,
+      "totalSaleUsd": 406.0,
+      "unitMarginUsd": 73.0,
+      "totalMarginUsd": 73.0
+    },
+    {
+      "date": "2026-09-19",
+      "paymentMethod": "Divisas Efectivo",
+      "productName": "Juego de Comedor 6 Puestos Madera",
+      "invoiceNumber": "F-0004",
+      "quantity": 1.0,
+      "unitSalePriceUsd": 343.0,
+      "unitCostUsd": 254.0,
+      "totalSaleUsd": 343.0,
+      "unitMarginUsd": 89.0,
+      "totalMarginUsd": 89.0
+    },
+    {
+      "date": "2026-09-18",
+      "paymentMethod": "Pago M\u00f3vil / Transf.",
+      "productName": "Cocina a Gas 4 Hornillas con Horno",
+      "invoiceNumber": "F-0005",
+      "quantity": 1.0,
+      "unitSalePriceUsd": 177.0,
+      "unitCostUsd": 141.0,
+      "totalSaleUsd": 177.0,
+      "unitMarginUsd": 36.0,
+      "totalMarginUsd": 36.0
+    },
+    {
+      "date": "2026-09-16",
+      "paymentMethod": "Zelle",
+      "productName": "Colch\u00f3n Queen Size Pillow Top",
+      "invoiceNumber": "F-0006",
+      "quantity": 1.0,
+      "unitSalePriceUsd": 299.0,
+      "unitCostUsd": 211.0,
+      "totalSaleUsd": 299.0,
+      "unitMarginUsd": 88.0,
+      "totalMarginUsd": 88.0
+    },
+    {
+      "date": "2026-09-15",
+      "paymentMethod": "Divisas Efectivo",
+      "productName": "Lavadora Autom\u00e1tica 14 Kg",
+      "invoiceNumber": "F-0007",
+      "quantity": 1.0,
+      "unitSalePriceUsd": 343.0,
+      "unitCostUsd": 281.0,
+      "totalSaleUsd": 343.0,
+      "unitMarginUsd": 62.0,
+      "totalMarginUsd": 62.0
+    },
+    {
+      "date": "2026-09-10",
+      "paymentMethod": "Punto de Venta",
+      "productName": "Cama Base Matrimonial Tapizada",
+      "invoiceNumber": "F-0008",
+      "quantity": 2.0,
+      "unitSalePriceUsd": 167.0,
+      "unitCostUsd": 123.0,
+      "totalSaleUsd": 334.0,
+      "unitMarginUsd": 44.0,
+      "totalMarginUsd": 88.0
+    },
+    {
+      "date": "2026-09-05",
+      "paymentMethod": "Divisas Efectivo",
+      "productName": "Cafetera Espresso Comercial 2 Grupos",
+      "invoiceNumber": "F-0009",
+      "quantity": 1.0,
+      "unitSalePriceUsd": 1088.0,
+      "unitCostUsd": 745.0,
+      "totalSaleUsd": 1088.0,
+      "unitMarginUsd": 343.0,
+      "totalMarginUsd": 343.0
+    },
+    {
+      "date": "2026-08-25",
+      "paymentMethod": "Divisas Efectivo",
+      "productName": "Colch\u00f3n Matrimonial Ortop\u00e9dico",
+      "invoiceNumber": "F-0010",
+      "quantity": 2.0,
+      "unitSalePriceUsd": 277.0,
+      "unitCostUsd": 158.0,
+      "totalSaleUsd": 554.0,
+      "unitMarginUsd": 119.0,
+      "totalMarginUsd": 238.0
+    },
+    {
+      "date": "2026-08-18",
+      "paymentMethod": "Punto de Venta",
+      "productName": "Nevera No Frost 12 Pies",
+      "invoiceNumber": "F-0011",
+      "quantity": 1.0,
+      "unitSalePriceUsd": 406.0,
+      "unitCostUsd": 333.0,
+      "totalSaleUsd": 406.0,
+      "unitMarginUsd": 73.0,
+      "totalMarginUsd": 73.0
+    },
+    {
+      "date": "2026-07-20",
+      "paymentMethod": "Zelle",
+      "productName": "Juego de Muebles Modular para Sala",
+      "invoiceNumber": "F-0012",
+      "quantity": 1.0,
+      "unitSalePriceUsd": 415.0,
+      "unitCostUsd": 307.0,
+      "totalSaleUsd": 415.0,
+      "unitMarginUsd": 108.0,
+      "totalMarginUsd": 108.0
+    },
+    {
+      "date": "2026-06-14",
+      "paymentMethod": "Divisas Efectivo",
+      "productName": "Molino de Caf\u00e9 Industrial Tolva 1kg",
+      "invoiceNumber": "F-0013",
+      "quantity": 1.0,
+      "unitSalePriceUsd": 239.0,
+      "unitCostUsd": 163.0,
+      "totalSaleUsd": 239.0,
+      "unitMarginUsd": 76.0,
+      "totalMarginUsd": 76.0
+    },
+    {
+      "date": "2026-05-10",
+      "paymentMethod": "Pago M\u00f3vil / Transf.",
+      "productName": "Colch\u00f3n Individual Semi-Ortop\u00e9dico",
+      "invoiceNumber": "F-0014",
+      "quantity": 3.0,
+      "unitSalePriceUsd": 148.0,
+      "unitCostUsd": 84.0,
+      "totalSaleUsd": 444.0,
+      "unitMarginUsd": 64.0,
+      "totalMarginUsd": 192.0
+    },
+    {
+      "date": "2026-09-21",
+      "paymentMethod": "Divisas Efectivo",
+      "productName": "Colch\u00f3n Queen Size Pillow Top",
+      "invoiceNumber": "F-0015",
+      "quantity": 1.0,
+      "unitSalePriceUsd": 299.0,
+      "unitCostUsd": 211.0,
+      "totalSaleUsd": 299.0,
+      "unitMarginUsd": 88.0,
+      "totalMarginUsd": 88.0
+    },
+    {
+      "date": "2026-09-22",
+      "paymentMethod": "Divisas Efectivo",
+      "productName": "Nevera No Frost 12 Pies",
+      "invoiceNumber": "F-0016",
+      "quantity": 2.0,
+      "unitSalePriceUsd": 406.0,
+      "unitCostUsd": 333.0,
+      "totalSaleUsd": 812.0,
+      "unitMarginUsd": 73.0,
+      "totalMarginUsd": 146.0
+    },
+    {
+      "date": "2026-09-23",
+      "paymentMethod": "Pago M\u00f3vil / Transf.",
+      "productName": "Lavadora Autom\u00e1tica 14 Kg",
+      "invoiceNumber": "F-0017",
+      "quantity": 1.0,
+      "unitSalePriceUsd": 343.0,
+      "unitCostUsd": 281.0,
+      "totalSaleUsd": 343.0,
+      "unitMarginUsd": 62.0,
+      "totalMarginUsd": 62.0
+    }
+  ]
+}
