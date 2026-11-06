@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { comparePassword, createSessionToken, SessionUser } from "@/lib/auth";
+import { comparePassword, createSessionToken, hashPassword, SessionUser } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,8 +20,29 @@ export async function POST(req: NextRequest) {
       user = await prisma.user.findUnique({
         where: { email: normalizedEmail },
       });
+
+      // First-time production bootstrap: If database is connected but has 0 users, auto-seed the initial Master Admin
+      if (!user) {
+        const userCount = await prisma.user.count();
+        if (
+          userCount === 0 &&
+          normalizedEmail === "admin@mercantilmariana.com" &&
+          password === "admin123"
+        ) {
+          const adminPassword = await hashPassword("admin123");
+          user = await prisma.user.create({
+            data: {
+              email: "admin@mercantilmariana.com",
+              name: "Administrador General",
+              passwordHash: adminPassword,
+              role: "ADMIN",
+              active: true,
+            },
+          });
+        }
+      }
     } catch {
-      // Allow fallback if database is not reachable
+      // Allow fallback if database is not reachable or tables not yet created
     }
 
     if (user) {

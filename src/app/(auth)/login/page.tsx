@@ -7,10 +7,11 @@ import { Lock, User, ArrowRight, ShieldCheck, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@mercantilmariana.com");
-  const [password, setPassword] = useState("admin123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const showDemoButtons = process.env.NEXT_PUBLIC_ENABLE_DEMO_LOGIN === "true";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,38 +134,46 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Quick Select Buttons */}
-          <div className="pt-3.5 border-t border-gray-200 text-center">
-            <span className="text-[10px] sm:text-[11px] text-gray-500 font-semibold block mb-2 uppercase tracking-wider">
-              Acceso Rápido para Pruebas:
-            </span>
-            <div className="flex flex-wrap justify-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => setDemo("admin@mercantilmariana.com", "admin123")}
-                className="px-2.5 py-1 text-[11px] bg-excel-lightSage text-excel-darkGreen font-bold border border-excel-mediumGreen/50 hover:bg-excel-mediumGreen hover:text-white transition shadow-sm rounded"
-                title="Acceso Maestro"
-              >
-                Master Admin
-              </button>
-              <button
-                type="button"
-                onClick={() => setDemo("gerente@mercantilmariana.com", "gerente123")}
-                className="px-2.5 py-1 text-[11px] bg-gray-100 text-gray-800 font-semibold border border-gray-300 hover:bg-gray-200 transition shadow-sm rounded"
-                title="Gerente Comercial"
-              >
-                Gerente
-              </button>
-              <button
-                type="button"
-                onClick={() => setDemo("vendedor@mercantilmariana.com", "vendedor123")}
-                className="px-2.5 py-1 text-[11px] bg-amber-50 text-amber-900 font-semibold border border-amber-300 hover:bg-amber-100 transition shadow-sm rounded"
-                title="Solo Lista de Precios"
-              >
-                Vendedor (Solo Precios)
-              </button>
+          {/* Quick Select Buttons (Only rendered if NEXT_PUBLIC_ENABLE_DEMO_LOGIN === "true") */}
+          {showDemoButtons ? (
+            <div className="pt-3.5 border-t border-gray-200 text-center">
+              <span className="text-[10px] sm:text-[11px] text-gray-500 font-semibold block mb-2 uppercase tracking-wider">
+                Acceso Rápido para Pruebas:
+              </span>
+              <div className="flex flex-wrap justify-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setDemo("admin@mercantilmariana.com", "admin123")}
+                  className="px-2.5 py-1 text-[11px] bg-excel-lightSage text-excel-darkGreen font-bold border border-excel-mediumGreen/50 hover:bg-excel-mediumGreen hover:text-white transition shadow-sm rounded"
+                  title="Acceso Maestro"
+                >
+                  Master Admin
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDemo("gerente@mercantilmariana.com", "gerente123")}
+                  className="px-2.5 py-1 text-[11px] bg-gray-100 text-gray-800 font-semibold border border-gray-300 hover:bg-gray-200 transition shadow-sm rounded"
+                  title="Gerente Comercial"
+                >
+                  Gerente
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDemo("vendedor@mercantilmariana.com", "vendedor123")}
+                  className="px-2.5 py-1 text-[11px] bg-amber-50 text-amber-900 font-semibold border border-amber-300 hover:bg-amber-100 transition shadow-sm rounded"
+                  title="Solo Lista de Precios"
+                >
+                  Vendedor (Solo Precios)
+                </button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="pt-3.5 border-t border-gray-100 text-center">
+              <p className="text-[11px] text-gray-400">
+                Acceso protegido. Sistema exclusivo para el personal autorizado de Mercantil Mariana.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

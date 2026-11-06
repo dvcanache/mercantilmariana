@@ -1,0 +1,150 @@
+================================================================================
+MERCANTIL MARIANA — MANUAL TÉCNICO, CREDENCIALES Y GUÍA DE PRODUCCIÓN
+================================================================================
+
+Este documento contiene la información técnica, credenciales maestras iniciales,
+configuración de variables de entorno y arquitectura del sistema para la entrega
+al cliente y despliegue en entornos de producción (Vercel + PostgreSQL).
+
+--------------------------------------------------------------------------------
+1. CREDENCIALES DE ACCESO INICIALES (BOOTSTRAP ACCOUNTS)
+--------------------------------------------------------------------------------
+
+El sistema cuenta con 3 perfiles de acceso con permisos jerárquicos:
+
+A) ADMINISTRADOR GENERAL (MASTER ADMIN)
+   - Correo / Usuario:   admin@mercantilmariana.com
+   - Contraseña inicial: admin123
+   - Nivel de Acceso:    Acceso Total y Exclusivo
+   - Capacidades:        Control de Precios (edición de costos y márgenes),
+                         Creación, edición y eliminación de productos,
+                         Ajuste de Tasas BCV y Reposición,
+                         Gestión de Usuarios (crear, editar contraseñas, roles),
+                         Registro de Ventas, Punto de Equilibrio y Ganancias.
+   - NOTA DE SEGURIDAD:  Una vez iniciado el sistema en producción, el cliente
+                         debe cambiar su contraseña en el módulo "Usuarios".
+
+B) GERENTE COMERCIAL (MANAGER)
+   - Correo / Usuario:   gerente@mercantilmariana.com
+   - Contraseña inicial: gerente123
+   - Nivel de Acceso:    Gestión Operativa y Financiera
+   - Capacidades:        Control de Precios, Creación y Edición de Productos,
+                         Ajuste de Tasas BCV, Registro de Ventas,
+                         Análisis de Punto de Equilibrio y Resumen de Ganancias.
+                         (No tiene acceso a la administración de usuarios).
+
+C) VENDEDOR DE MOSTRADOR / CAJERO (SALES CLERK)
+   - Correo / Usuario:   vendedor@mercantilmariana.com
+   - Contraseña inicial: vendedor123
+   - Nivel de Acceso:    Consulta de Catálogo al Consumidor
+   - Capacidades:        Acceso exclusivo a la "Lista de Precios al Público".
+   - Aislamiento RBAC:   Los costos de proveedores ($) y márgenes de ganancia (%)
+                         están estrictamente bloqueados y sanitizados tanto en
+                         pantalla como a nivel de red (API).
+
+--------------------------------------------------------------------------------
+2. VARIABLES DE ENTORNO PARA PRODUCCIÓN (VERCEL / DOCKER / SERVIDOR)
+--------------------------------------------------------------------------------
+
+Configure las siguientes variables en el panel de Vercel (Project Settings -> Environment Variables):
+
+1. DATABASE_URL (Recomendado para persistencia real)
+   - Descripción: Cadena de conexión a base de datos PostgreSQL Serverless.
+   - Proveedores recomendados: Neon (neon.tech), Supabase (supabase.com) o Vercel Postgres.
+   - Formato:
+     DATABASE_URL="postgresql://USUARIO:PASSWORD@HOST:5432/mercantilmariana?sslmode=require"
+
+2. NEXTAUTH_SECRET (Requerido)
+   - Descripción: Clave criptográfica para la firma de tokens de sesión JWT (HS256).
+   - Generación rápida: ejecute en terminal `openssl rand -base64 32`
+   - Ejemplo:
+     NEXTAUTH_SECRET="f8a92b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1"
+
+3. NEXTAUTH_URL (Opcional en Vercel, recomendado para dominio propio)
+   - Descripción: URL canónica del sistema.
+   - Ejemplo:
+     NEXTAUTH_URL="https://mercantil-mariana.vercel.app"
+
+4. NEXT_PUBLIC_ENABLE_DEMO_LOGIN (Opcional - Uso exclusivo de desarrollo/pruebas)
+   - Valores: "true" | "false" (Por defecto: false)
+   - Si se omite o es "false", la pantalla de inicio de sesión permanece limpia y
+     segura para los clientes finales, sin exponer botones de relleno automático.
+
+--------------------------------------------------------------------------------
+3. INICIALIZACIÓN DE LA BASE DE DATOS EN PRODUCCIÓN
+--------------------------------------------------------------------------------
+
+Cuando conecte una base de datos PostgreSQL por primera vez:
+
+Paso 1: Crear las tablas en PostgreSQL
+   Ejecute en la consola local o en un pipeline CI/CD:
+   $ pnpm prisma db push
+
+Paso 2: Cargar el catálogo completo del Excel oficial (Opcional)
+   Para sembrar todos los productos, categorías, costos y tasas del Excel:
+   $ pnpm seed
+
+Paso 3: Auto-Bootstrap de Emergencia
+   Si despliega directamente en Vercel y conecta la base de datos sin ejecutar
+   `pnpm seed`, la aplicación detectará que la tabla de usuarios está vacía y
+   creará automáticamente el usuario Master Admin en su primer inicio de sesión
+   con las credenciales admin@mercantilmariana.com / admin123, guardándolo con
+   hash bcrypt de forma segura.
+
+--------------------------------------------------------------------------------
+4. ARQUITECTURA DE SEGURIDAD Y POLÍTICAS DE AUTENTICACIÓN
+--------------------------------------------------------------------------------
+
+- Algoritmo de Hashing: bcrypt con factor de costo 10.
+- Tokens de Sesión: JSON Web Tokens (JWT) firmados con JOSE (HS256).
+- Cookies de Sesión:
+  * HttpOnly: true (Inmune a ataques de robo de sesión por XSS).
+  * SameSite: Lax (Protección contra Cross-Site Request Forgery - CSRF).
+  * Secure: true en entornos de producción (Transmisión exclusiva vía HTTPS).
+  * Duración de sesión: 7 días de validez con refresco automático.
+- Protección del Último Master:
+  El sistema impide que el único administrador de la empresa pueda ser eliminado
+  o degradado a otro rol, evitando bloqueos accidentales del sistema.
+
+--------------------------------------------------------------------------------
+5. RUTAS Y ENDPOINTS DEL BACKEND (API REST)
+--------------------------------------------------------------------------------
+
+Autenticación y Sesión:
+- POST /api/auth/login     -> Valida credenciales, genera JWT y cookie segura.
+- POST /api/auth/logout    -> Revoca y destruye la cookie de sesión.
+- GET  /api/auth/me        -> Retorna los datos y rol del usuario autenticado.
+
+Catálogo y Precios:
+- GET  /api/products       -> Lista productos con cálculo de precios bi-monetarios.
+                              (Sanitiza costos y márgenes si el usuario es VENDEDOR).
+- POST /api/products       -> Crea un nuevo producto (Requiere ADMIN o MANAGER).
+- PUT  /api/products/[id]  -> Actualiza costos, márgenes o datos del producto.
+- DELETE /api/products/[id]-> Elimina o archiva el producto.
+
+Tasas de Cambio:
+- GET  /api/rates          -> Consulta las tasas vigentes (BCV y Reposición).
+- PUT  /api/rates          -> Actualiza manualmente las tasas de cambio.
+- POST /api/rates/sync     -> Sincroniza en línea con la tasa oficial BCV.
+
+Gestión de Usuarios (Exclusivo ADMIN):
+- GET  /api/users          -> Lista todo el personal registrado.
+- POST /api/users          -> Registra un nuevo empleado y genera su contraseña.
+- PUT  /api/users/[id]     -> Modifica datos, rol o restablece contraseña.
+- DELETE /api/users/[id]   -> Desactiva o elimina la cuenta del empleado.
+
+Ventas y Reportes:
+- GET  /api/sales          -> Historial de transacciones comerciales.
+- POST /api/sales          -> Registra una nueva venta con cálculo de margen.
+- GET  /api/break-even     -> Costos fijos y meta de punto de equilibrio.
+- GET  /api/dashboard/summary -> Métricas consolidadas de rentabilidad diaria/mensual.
+
+--------------------------------------------------------------------------------
+6. SOPORTE Y CONTACTO TÉCNICO
+--------------------------------------------------------------------------------
+
+- Repositorio GitHub: https://github.com/dvcanache/mercantilmariana
+- Desarrollador:      Dave Canache
+- Correo:             davehcanache@gmail.com
+- Sistema:            Mercantil Mariana v1.0.0
+================================================================================
