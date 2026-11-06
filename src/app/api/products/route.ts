@@ -3,34 +3,7 @@ import { prisma } from "@/lib/db";
 import { getSessionUser } from "@/lib/auth";
 import { calculateProductPricing, ExchangeRates } from "@/lib/pricing-engine";
 import seedData from "@/data/seed-data.json";
-
-export interface CachedProductItem {
-  id: string;
-  sku: string;
-  name: string;
-  category: { id?: string; code?: string; name: string };
-  brand: string;
-  model: string;
-  supplierCostUsd: number;
-  targetMarginPercentage: number;
-  unitOfMeasure: string;
-  currentStock: number;
-  active: boolean;
-}
-
-export let cachedProducts: CachedProductItem[] = seedData.products.map((p, idx) => ({
-  id: `prod_${idx + 1}`,
-  sku: p.sku,
-  name: p.name,
-  category: { name: p.category },
-  brand: p.brand,
-  model: p.model,
-  supplierCostUsd: p.supplierCostUsd,
-  targetMarginPercentage: p.targetMarginPercentage,
-  unitOfMeasure: p.unitOfMeasure,
-  currentStock: p.currentStock,
-  active: true,
-}));
+import { cachedProducts, CachedProductItem } from "@/lib/product-cache";
 
 async function getEffectiveRates(): Promise<ExchangeRates> {
   try {
@@ -78,38 +51,15 @@ export async function GET(req: NextRequest) {
       orderBy: { sku: "asc" },
     });
 
-    if (dbProducts && dbProducts.length > 0) {
-      const formatted = dbProducts.map((p) => {
-        const cost = Number(p.supplierCostUsd);
-        const margin = Number(p.targetMarginPercentage);
-        const pricing = calculateProductPricing(
-          { supplierCostUsd: cost, targetMarginPercentage: margin },
-          rates
-        );
+    const formatted = dbProducts.map((p) => {
+      const cost = Number(p.supplierCostUsd);
+      const margin = Number(p.targetMarginPercentage);
+      const pricing = calculateProductPricing(
+        { supplierCostUsd: cost, targetMarginPercentage: margin },
+        rates
+      );
 
-        if (isRestricted) {
-          return {
-            id: p.id,
-            sku: p.sku,
-            name: p.name,
-            category: p.category,
-            brand: p.brand,
-            model: p.model,
-            unitOfMeasure: p.unitOfMeasure,
-            currentStock: Number(p.currentStock),
-            active: p.active,
-            // Strictly scrub and mask confidential financial numbers
-            supplierCostUsd: null,
-            targetMarginPercentage: null,
-            pricing: {
-              bcvPriceUsd: pricing.bcvPriceUsd,
-              salePriceBs: pricing.salePriceBs,
-              promoPriceUsd: pricing.promoPriceUsd,
-              promoPriceUsd2: pricing.promoPriceUsd2,
-            },
-          };
-        }
-
+      if (isRestricted) {
         return {
           id: p.id,
           sku: p.sku,
@@ -117,19 +67,40 @@ export async function GET(req: NextRequest) {
           category: p.category,
           brand: p.brand,
           model: p.model,
-          supplierCostUsd: cost,
-          targetMarginPercentage: margin,
           unitOfMeasure: p.unitOfMeasure,
           currentStock: Number(p.currentStock),
           active: p.active,
-          pricing,
+          // Strictly scrub and mask confidential financial numbers
+          supplierCostUsd: null,
+          targetMarginPercentage: null,
+          pricing: {
+            bcvPriceUsd: pricing.bcvPriceUsd,
+            salePriceBs: pricing.salePriceBs,
+            promoPriceUsd: pricing.promoPriceUsd,
+            promoPriceUsd2: pricing.promoPriceUsd2,
+          },
         };
-      });
+      }
 
-      return NextResponse.json(formatted);
-    }
+      return {
+        id: p.id,
+        sku: p.sku,
+        name: p.name,
+        category: p.category,
+        brand: p.brand,
+        model: p.model,
+        supplierCostUsd: cost,
+        targetMarginPercentage: margin,
+        unitOfMeasure: p.unitOfMeasure,
+        currentStock: Number(p.currentStock),
+        active: p.active,
+        pricing,
+      };
+    });
+
+    return NextResponse.json(formatted);
   } catch {
-    // Return cached fallback
+    // Return cached fallback if database is offline
   }
 
   // Filter in-memory cache

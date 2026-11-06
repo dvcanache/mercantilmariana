@@ -7,7 +7,12 @@ import { ExchangeRates } from "@/lib/pricing-engine";
 import defaultSeedData from "@/data/seed-data.json";
 
 export default function ListaPreciosPage() {
-  const [products, setProducts] = useState<ProductItem[]>(defaultSeedData.products as any);
+  const [products, setProducts] = useState<ProductItem[]>(() =>
+    (defaultSeedData.products as any[]).map((p, idx) => ({
+      ...p,
+      id: `prod_${idx + 1}`,
+    }))
+  );
   const [rates, setRates] = useState<ExchangeRates>(defaultSeedData.rates);
 
   useEffect(() => {

@@ -7,7 +7,12 @@ import { ProductFormData } from "@/lib/types/product";
 import defaultSeedData from "@/data/seed-data.json";
 
 export default function ControlPreciosPage() {
-  const [products, setProducts] = useState<ProductItem[]>(defaultSeedData.products as any);
+  const [products, setProducts] = useState<ProductItem[]>(() =>
+    (defaultSeedData.products as any[]).map((p, idx) => ({
+      ...p,
+      id: `prod_${idx + 1}`,
+    }))
+  );
   const [rates, setRates] = useState<ExchangeRates>(defaultSeedData.rates);
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState<{ type: "success" | "info" | "error"; message: string } | null>(null);
@@ -112,9 +117,9 @@ export default function ControlPreciosPage() {
     }
   };
 
-  const handleDeleteProduct = async (id: string) => {
+  const handleDeleteProduct = async (id: string, force: boolean = false) => {
     try {
-      const res = await fetch(`/api/products/${id}`, {
+      const res = await fetch(`/api/products/${id}${force ? "?force=true" : ""}`, {
         method: "DELETE",
       });
 
@@ -126,16 +131,19 @@ export default function ControlPreciosPage() {
       const data = await res.json();
 
       if (data.action === "ARCHIVED") {
+        const wantForce = window.confirm(
+          `El producto "${data.sku || id}" tiene ${data.salesCount || "varias"} ventas registradas y fue pausado/archivado para proteger las cuentas.\n\n¿Desea ELIMINARLO PERMANENTEMENTE borrando también sus ventas asociadas?`
+        );
+        if (wantForce) {
+          return handleDeleteProduct(id, true);
+        }
         setProducts((prev) =>
-          prev.map((item) => (item.id === id ? { ...item, active: false } : item))
+          prev.map((item) => (item.id === id || item.sku === data.sku ? { ...item, active: false } : item))
         );
-        showNotification(
-          "Producto archivado: Posee ventas en el historial, por lo que fue desactivado para proteger los registros financieros.",
-          "info"
-        );
+        showNotification("Producto archivado y desactivado del catálogo activo.", "info");
       } else {
-        setProducts((prev) => prev.filter((item) => item.id !== id));
-        showNotification("Producto eliminado permanentemente del catálogo.");
+        setProducts((prev) => prev.filter((item) => item.id !== id && item.sku !== data.sku));
+        showNotification(data.message || "Producto eliminado permanentemente del catálogo.");
       }
     } catch (err: any) {
       showNotification(err?.message || "Error al eliminar producto", "error");

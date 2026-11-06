@@ -164,9 +164,9 @@ export const PriceControlTable: React.FC<PriceControlTableProps> = ({
 
   const handleDelete = async (p: ProductItem) => {
     if (readOnly || !onDeleteProduct) return;
-    const confirmMsg = `¿Está seguro de eliminar o archivar el producto "${p.name}" (${p.sku})?\n\nSi tiene ventas históricas asociadas, será archivado para proteger la contabilidad. Si no tiene ventas, será eliminado permanentemente.`;
+    const confirmMsg = `¿Está seguro de eliminar el producto "${p.name}" (${p.sku})?\n\nPresione Aceptar para continuar.`;
     if (window.confirm(confirmMsg)) {
-      await onDeleteProduct(p.id);
+      await onDeleteProduct(p.id || p.sku);
     }
   };
 

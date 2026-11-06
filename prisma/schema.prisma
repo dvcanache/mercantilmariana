@@ -85,7 +85,7 @@ model SaleTransaction {
   date             DateTime      @default(now())
   paymentMethod    PaymentMethod
   productId        String
-  product          Product       @relation(fields: [productId], references: [id])
+  product          Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
   invoiceNumber    String?
   quantity         Decimal       @db.Decimal(10, 2)
   unitSalePriceUsd Decimal       @db.Decimal(10, 2)

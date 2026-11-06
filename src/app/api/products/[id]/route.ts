@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getSessionUser } from "@/lib/auth";
-import { cachedProducts } from "../route";
+import { cachedProducts } from "@/lib/product-cache";
 
 export async function PUT(
   req: NextRequest,
@@ -67,12 +67,14 @@ export async function PUT(
         });
         categoryId = catRecord.id;
       } catch {
-        // Continue
+        // Fallback
       }
     }
 
     // Update in-memory cached fallback
-    const cachedIdx = cachedProducts.findIndex((p) => p.id === id);
+    const cachedIdx = cachedProducts.findIndex(
+      (p) => p.id === id || p.sku.toUpperCase() === id.toUpperCase()
+    );
     if (cachedIdx !== -1) {
       cachedProducts[cachedIdx] = {
         ...cachedProducts[cachedIdx],
@@ -90,33 +92,43 @@ export async function PUT(
     }
 
     try {
-      const updated = await prisma.product.update({
-        where: { id },
-        data: {
-          ...(name !== undefined && { name: String(name).trim() }),
-          ...(sku !== undefined && { sku: String(sku).trim().toUpperCase() }),
-          ...(categoryId !== undefined && { categoryId }),
-          ...(brand !== undefined && { brand: String(brand).trim() }),
-          ...(model !== undefined && { model: String(model).trim() }),
-          ...(supplierCostUsd !== undefined && { supplierCostUsd: Number(supplierCostUsd) }),
-          ...(targetMarginPercentage !== undefined && {
-            targetMarginPercentage: Number(targetMarginPercentage),
-          }),
-          ...(unitOfMeasure !== undefined && { unitOfMeasure: String(unitOfMeasure).trim() }),
-          ...(currentStock !== undefined && { currentStock: Number(currentStock) }),
-          ...(active !== undefined && { active: Boolean(active) }),
+      // Find real DB record by ID or SKU
+      const existingDb = await prisma.product.findFirst({
+        where: {
+          OR: [{ id }, { sku: id }],
         },
-        include: { category: true },
       });
-      return NextResponse.json(updated);
+
+      if (existingDb) {
+        const updated = await prisma.product.update({
+          where: { id: existingDb.id },
+          data: {
+            ...(name !== undefined && { name: String(name).trim() }),
+            ...(sku !== undefined && { sku: String(sku).trim().toUpperCase() }),
+            ...(categoryId !== undefined && { categoryId }),
+            ...(brand !== undefined && { brand: String(brand).trim() }),
+            ...(model !== undefined && { model: String(model).trim() }),
+            ...(supplierCostUsd !== undefined && { supplierCostUsd: Number(supplierCostUsd) }),
+            ...(targetMarginPercentage !== undefined && {
+              targetMarginPercentage: Number(targetMarginPercentage),
+            }),
+            ...(unitOfMeasure !== undefined && { unitOfMeasure: String(unitOfMeasure).trim() }),
+            ...(currentStock !== undefined && { currentStock: Number(currentStock) }),
+            ...(active !== undefined && { active: Boolean(active) }),
+          },
+          include: { category: true },
+        });
+        return NextResponse.json(updated);
+      }
     } catch {
-      // Return ok for local cache fallback
-      return NextResponse.json({
-        success: true,
-        id,
-        updates: cachedIdx !== -1 ? cachedProducts[cachedIdx] : body,
-      });
+      // Fallback to cache response
     }
+
+    return NextResponse.json({
+      success: true,
+      id,
+      updates: cachedIdx !== -1 ? cachedProducts[cachedIdx] : body,
+    });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
@@ -136,62 +148,93 @@ export async function DELETE(
 
   try {
     const { id } = params;
+    const { searchParams } = new URL(req.url);
+    const forceDelete = searchParams.get("force") === "true";
 
-    let salesCount = 0;
+    // 1. Locate product in Neon DB by ID or SKU
+    let dbProduct: any = null;
     try {
-      salesCount = await prisma.saleTransaction.count({
-        where: { productId: id },
+      dbProduct = await prisma.product.findFirst({
+        where: {
+          OR: [{ id }, { sku: id }],
+        },
+        include: {
+          _count: { select: { sales: true } },
+        },
       });
     } catch {
-      // Fallback
+      // DB connection issue fallback
     }
 
-    // Check in-memory cache
-    const cachedIdx = cachedProducts.findIndex((p) => p.id === id);
+    // 2. Locate in local cache fallback
+    const cachedIdx = cachedProducts.findIndex(
+      (p) => p.id === id || p.sku.toUpperCase() === id.toUpperCase()
+    );
 
-    if (salesCount > 0) {
-      // Soft Archive to protect financial audit trail
-      try {
+    if (dbProduct) {
+      const salesCount = dbProduct._count?.sales || 0;
+
+      if (salesCount > 0 && !forceDelete) {
+        // Soft archive by default to preserve financial historical integrity
         await prisma.product.update({
-          where: { id },
+          where: { id: dbProduct.id },
           data: { active: false },
         });
-      } catch {
-        // Fallback
+
+        if (cachedIdx !== -1) {
+          cachedProducts[cachedIdx].active = false;
+        }
+
+        return NextResponse.json({
+          success: true,
+          action: "ARCHIVED",
+          id: dbProduct.id,
+          sku: dbProduct.sku,
+          salesCount,
+          message:
+            `El producto posee ${salesCount} ventas registradas. Ha sido desactivado/archivado del catálogo para proteger la contabilidad.`,
+        });
       }
 
+      // Hard permanent delete (Cascade deletes sales if force=true or schema cascade)
+      if (salesCount > 0 && forceDelete) {
+        await prisma.saleTransaction.deleteMany({
+          where: { productId: dbProduct.id },
+        });
+      }
+
+      await prisma.product.delete({
+        where: { id: dbProduct.id },
+      });
+
       if (cachedIdx !== -1) {
-        cachedProducts[cachedIdx].active = false;
+        cachedProducts.splice(cachedIdx, 1);
       }
 
       return NextResponse.json({
         success: true,
-        action: "ARCHIVED",
-        id,
-        message:
-          "El producto tiene ventas registradas en el historial. Ha sido desactivado/archivado para preservar la integridad financiera.",
+        action: "DELETED",
+        id: dbProduct.id,
+        sku: dbProduct.sku,
+        message: "Producto eliminado permanentemente del catálogo",
       });
     }
 
-    // Permanent Hard Delete if no sales exist
-    try {
-      await prisma.product.delete({
-        where: { id },
-      });
-    } catch {
-      // Fallback
-    }
-
+    // 3. Fallback cache removal
     if (cachedIdx !== -1) {
       cachedProducts.splice(cachedIdx, 1);
+      return NextResponse.json({
+        success: true,
+        action: "DELETED",
+        id,
+        message: "Producto eliminado del catálogo",
+      });
     }
 
-    return NextResponse.json({
-      success: true,
-      action: "DELETED",
-      id,
-      message: "Producto eliminado exitosamente del catálogo",
-    });
+    return NextResponse.json(
+      { error: `No se encontró el producto con identificador '${id}'` },
+      { status: 404 }
+    );
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
